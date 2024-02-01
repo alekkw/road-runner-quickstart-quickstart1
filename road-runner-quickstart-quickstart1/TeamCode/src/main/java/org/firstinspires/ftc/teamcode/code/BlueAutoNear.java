@@ -163,6 +163,8 @@ public class BlueAutoNear extends LinearOpMode {
 
                 hw.sideClawLeftServo.setPosition(0.5);
 
+                hw.sideClawPosServo.setPosition(0.490);
+
 
 
                 hw.intakeMotor.setPower(0);
