@@ -106,8 +106,9 @@ public class BlueAutoNear extends LinearOpMode {
                 drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(30,30, Math.toRadians(90)))
                         .lineToSplineHeading(new Pose2d(30, 20, Math.toRadians(-90)))
                         .splineToConstantHeading(new Vector2d(1.5,5), Math.toRadians(-90))
-//                        .lineToLinearHeading(new Pose2d(1.5, -48, Math.toRadians(-90)))
-                       .build()
+                        .lineToLinearHeading(new Pose2d(1.5, -48, Math.toRadians(-90)))
+                        .lineToLinearHeading(new Pose2d(24, -64, Math.toRadians(0)))
+                        .build()
                 );
 
                 telemetry.addLine("OPENING SERVO");
@@ -128,11 +129,7 @@ public class BlueAutoNear extends LinearOpMode {
                 }
                 telemetry.addLine("DONE DRIVING");
                 telemetry.update();
-//
-//                drive.followTrajectory(drive.trajectoryBuilder(new Pose2d(1.5,5, Math.toRadians(-90)))
-//                        .lineToLinearHeading(new Pose2d(1.5, 48, Math.toRadians(-90)))
-//                        .build()
-//                );
+
 
 
                 hw.intakeMotor.setPower(0);
