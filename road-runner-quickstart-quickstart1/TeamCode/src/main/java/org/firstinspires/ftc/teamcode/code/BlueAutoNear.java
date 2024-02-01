@@ -127,8 +127,41 @@ public class BlueAutoNear extends LinearOpMode {
                         temp = false;
                     }
                 }
+                temp = true;
                 telemetry.addLine("DONE DRIVING");
                 telemetry.update();
+
+                //pick up pixels from stack
+                hw.sideClawPosServo.setPosition(0.4);
+
+                drive.followTrajectory(drive.trajectoryBuilder(new Pose2d(24, -64, Math.toRadians(0)))
+                        .strafeRight(5)
+                        .build()
+                );
+
+                hw.sideClawLeftServo.setPosition(0.750);
+                sleep(200);
+
+
+                //drive back
+                drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(24, -69, Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(1.5, -48, Math.toRadians(-90)))
+                        .lineToLinearHeading(new Pose2d(1.5,5, Math.toRadians(-90)))
+                        .splineTo(new Vector2d(30,30), Math.toRadians(180))
+                        .build()
+                );
+
+                while(!Thread.currentThread().isInterrupted() && drive.isBusy()){
+                    drive.update();
+                    if(temp && drive.getPoseEstimate().getY() < 15){
+                        hw.clawPosServo.setPosition(0.3);
+                        temp = false;
+                    }
+                }
+
+                //place pixel
+
+                hw.sideClawLeftServo.setPosition(0.5);
 
 
 
