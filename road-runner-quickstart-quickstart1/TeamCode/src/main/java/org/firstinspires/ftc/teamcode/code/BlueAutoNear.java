@@ -158,12 +158,13 @@ public class BlueAutoNear extends LinearOpMode {
                         temp = false;
                     }
                 }
-// cdjxkschjslakhfdsaiohbhasjkdhnaskldnasd
+
                 //place pixel
 
                 hw.sideClawLeftServo.setPosition(0.5);
 
                 hw.sideClawPosServo.setPosition(0.490);
+                //testing
 
 
 
