@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.code.Hardware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -27,8 +26,8 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
 @Config
-@Autonomous(group = "drive")
-public class BackAndForth extends LinearOpMode {
+@Autonomous(name = "BackAndForthTurn")
+public class BackAndForthTurn extends LinearOpMode {
 
     public static double DISTANCE = 30;
 
@@ -37,11 +36,10 @@ public class BackAndForth extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
-                .forward(DISTANCE)
+                .lineToSplineHeading(new Pose2d(DISTANCE, 0, Math.toRadians(180)))
                 .build();
-
         Trajectory trajectoryBackward = drive.trajectoryBuilder(trajectoryForward.end())
-                .back(DISTANCE)
+                .lineToSplineHeading(new Pose2d(0, 0, Math.toRadians(0)))
                 .build();
 
         waitForStart();
@@ -53,12 +51,6 @@ public class BackAndForth extends LinearOpMode {
             telemetry.addData("Right: ", hw.intakeMotor.getCurrentPosition());
             telemetry.addData("Left: ", hw.propelMotor.getCurrentPosition());
             telemetry.addData("Center: ", hw.bl.getCurrentPosition());
-            telemetry.addData("Right Local: ", ((StandardTrackingWheelLocalizer)drive.getLocalizer()).getWheelPositions().get(1));
-            telemetry.addData("Left Local: ", ((StandardTrackingWheelLocalizer)drive.getLocalizer()).getWheelPositions().get(0));
-            telemetry.addData("Center Local: ", ((StandardTrackingWheelLocalizer)drive.getLocalizer()).getWheelPositions().get(2));
-            telemetry.addData("Right Auto: ", drive.getPoseEstimate().getX());
-            telemetry.addData("Left Auto: ", hw.propelMotor.getCurrentPosition());
-            telemetry.addData("Center Auto: ", hw.bl.getCurrentPosition());
             telemetry.update();
             drive.followTrajectory(trajectoryForward);
             drive.followTrajectory(trajectoryBackward);

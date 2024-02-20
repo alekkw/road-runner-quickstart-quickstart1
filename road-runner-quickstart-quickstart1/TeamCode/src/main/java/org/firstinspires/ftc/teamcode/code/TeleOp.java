@@ -46,7 +46,6 @@ public class TeleOp extends LinearOpMode {
         double prior_y_pos = 0;
         double prior_heading = 0;
         double prior_time = 0;
-       StandardTrackingWheelLocalizer odometry = new StandardTrackingWheelLocalizer(hardwareMap, new ArrayList<Integer>(), new ArrayList<Integer>());
 
         FullArmController arm_controller = new FullArmController(0.01, this, hw.armMotor, hw.slideMotor);
         Thread arm_controller_thread = new Thread(arm_controller);
@@ -98,8 +97,6 @@ public class TeleOp extends LinearOpMode {
         boolean queue_move_switch = true;
         boolean is_using_queue_move = false;
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
         final double queue_move_START_X = 0, queue_move_START_Y = 0, queue_move_START_HEAD = 0;
 
         waitForStart();
@@ -117,17 +114,6 @@ public class TeleOp extends LinearOpMode {
 
              c_0 = RobotConstants.startPos;
 
-            //get current velocity/position
-            double x_vel = (odometry.getXPos() - prior_x_pos) / (getRuntime() - prior_time);
-            double y_vel = (odometry.getYPos() - prior_y_pos) / (getRuntime() - prior_time);
-            prior_x_pos = odometry.getXPos();
-            prior_y_pos = odometry.getYPos();
-            prior_heading = 0;
-            prior_time = getRuntime();
-//            telemetry.addData("X Pos/Y Pos:", prior_x_pos + "/" + prior_y_pos);
-//
-//            telemetry.addData("X Pos / Y Pos:", drive.getLocalizer().getPoseEstimate().getX() + " / " + drive.getLocalizer().getPoseEstimate().getY());
-
             //movement
             double r = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
@@ -144,8 +130,8 @@ public class TeleOp extends LinearOpMode {
 
 
             //intake
-            hw.intakeMotor.setPower(-gamepad2.right_trigger * 0.45 + gamepad2.left_trigger * 0.45);
-            hw.propelMotor.setPower(gamepad2.right_trigger * 0.2 - gamepad2.left_trigger * 0.2);
+            hw.intakeMotor.setPower(-gamepad2.right_trigger * 0.6 + gamepad2.left_trigger * 0.6);
+            hw.propelMotor.setPower(gamepad2.right_trigger * 0.5 - gamepad2.left_trigger * 0.5);
 
 
             
@@ -259,29 +245,29 @@ public class TeleOp extends LinearOpMode {
                 game1_dpad_right = false;
             }
 
-                    //activator
-            if(gamepad1.left_bumper){
-                if(queue_move){
-                    if(queue_move_switch){
-                        //turn on move
-                        drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(prior_x_pos, prior_y_pos, prior_heading))
-                                .splineTo(new Vector2d(queue_move_pos_table[queue_move_pos][0],queue_move_pos_table[queue_move_pos][1]), queue_move_pos_table[queue_move_pos][2])
-                                .build()
-                        );
-                        queue_move_switch = false;
-                        is_using_queue_move = true;
-                    }else{
-                        //turn off
-                        drive.stop();
-                        is_using_queue_move = false;
-                        queue_move_switch = true;
-                        queue_move_pos = 0;
-                    }
-                    queue_move = false;
-                }
-            }else{
-                queue_move = true;
-            }
+//                    //activator
+//            if(gamepad1.left_bumper){
+//                if(queue_move){
+//                    if(queue_move_switch){
+//                        //turn on move
+//                        drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(prior_x_pos, prior_y_pos, prior_heading))
+//                                .splineTo(new Vector2d(queue_move_pos_table[queue_move_pos][0],queue_move_pos_table[queue_move_pos][1]), queue_move_pos_table[queue_move_pos][2])
+//                                .build()
+//                        );
+//                        queue_move_switch = false;
+//                        is_using_queue_move = true;
+//                    }else{
+//                        //turn off
+//                        drive.stop();
+//                        is_using_queue_move = false;
+//                        queue_move_switch = true;
+//                        queue_move_pos = 0;
+//                    }
+//                    queue_move = false;
+//                }
+//            }else{
+//                queue_move = true;
+//            }
 
 //            while (is_using_queue_move && !Thread.currentThread().isInterrupted() && drive.isBusy()){
 //                drive.update();
@@ -327,6 +313,7 @@ public class TeleOp extends LinearOpMode {
                 hw.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 hw.slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 hw.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                hw.clawPosServo.setPosition(RobotConstants.startPos);
                 arm_controller.set_arm_target(0);
                 arm_controller.set_slide_target(0);
             }

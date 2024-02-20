@@ -7,7 +7,7 @@ public class RobotConstants {
 
     public static double flp = 0.8, frp = 0.8, blp = 1, brp = 1;
     public static double p = 1, i = 0, d = 0, f = 0;
-    public static double startPos = 0.75;
+    public static double startPos = 0.80;
     public static double c_60_const = 80;
 
     public static double slide_kp = 0.006;

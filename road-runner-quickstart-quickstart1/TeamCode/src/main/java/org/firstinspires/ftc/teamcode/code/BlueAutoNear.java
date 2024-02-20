@@ -72,7 +72,7 @@ public class BlueAutoNear extends LinearOpMode {
         hw.camera.stopStreaming();
 
         double time;
-        boolean temp = true;
+        boolean temp = true, temp2 = true, temp3 = true, temp4 = true, temp5 = true;
         switch(position){
             case left:
 
@@ -103,11 +103,17 @@ public class BlueAutoNear extends LinearOpMode {
 
                 hw.sideClawPosServo.setPosition(0.170);
 
+                // First position getting the arm up to the board
+                // Dropping the first pixel
                 drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(30,30, Math.toRadians(90)))
+//                        .lineToSplineHeading(new Pose2d(30, 20, Math.toRadians(-90)))
+//                        .splineToConstantHeading(new Vector2d(1.5,10), Math.toRadians(-90))
+//                        .lineToLinearHeading(new Pose2d(1.5, -48, Math.toRadians(-90)))
                         .lineToSplineHeading(new Pose2d(30, 20, Math.toRadians(-90)))
-                        .splineToConstantHeading(new Vector2d(1.5,5), Math.toRadians(-90))
-                        .lineToLinearHeading(new Pose2d(1.5, -48, Math.toRadians(-90)))
-                        .lineToLinearHeading(new Pose2d(24, -64, Math.toRadians(0)))
+                        .splineToConstantHeading(new Vector2d(1, 7), Math.toRadians(-90))
+                        .lineToLinearHeading(new Pose2d(1, -48, Math.toRadians(-90)))
+                        .splineToSplineHeading(new Pose2d(26, -64, Math.toRadians(180)), Math.toRadians(-90))
+                        .strafeLeft(6)
                         .build()
                 );
 
@@ -126,44 +132,78 @@ public class BlueAutoNear extends LinearOpMode {
                         hw.clawPosServo.setPosition(RobotConstants.startPos);
                         temp = false;
                     }
+                    if(temp2 && drive.getPoseEstimate().getY() < 10){
+                        hw.sideClawPosServo.setPosition(0.570);
+                        temp2 = false;
+                    }
+                    if(temp3 && drive.getPoseEstimate().getX() < 20){
+                        hw.sideClawLeftServo.setPosition(0.5);
+                        temp3 = false;
+                    }
+                    if(temp4 && drive.getPoseEstimate().getY() < -48){
+                        hw.sideClawPosServo.setPosition(0.170);
+                        temp4 = false;
+                    }
+                    if(temp5 && drive.getPoseEstimate().getY() < -70){
+                        hw.sideClawLeftServo.setPosition(0.750);
+                        temp5 = false;
+                    }
                 }
-                temp = true;
+                temp = true; temp2 = true; temp3 = true; temp4 = true; temp5 = true;
                 telemetry.addLine("DONE DRIVING");
                 telemetry.update();
 
-                //pick up pixels from stack
-                hw.sideClawPosServo.setPosition(0.4);
+//                drive.followTrajectory(drive.trajectoryBuilder(new Pose2d(1.5, -48, Math.toRadians(-90)))
+//                        .splineToLinearHeading(new Pose2d(24, -64), Math.toRadians(0))
+//                        .build()
+//                );
 
-                drive.followTrajectory(drive.trajectoryBuilder(new Pose2d(24, -64, Math.toRadians(0)))
-                        .strafeRight(5)
-                        .build()
-                );
+                hw.sideClawPosServo.setPosition(0.490);
 
-                hw.sideClawLeftServo.setPosition(0.750);
-                sleep(200);
-
-
-                //drive back
-                drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(24, -69, Math.toRadians(0)))
-                        .lineToLinearHeading(new Pose2d(1.5, -48, Math.toRadians(-90)))
-                        .lineToLinearHeading(new Pose2d(1.5,5, Math.toRadians(-90)))
-                        .splineTo(new Vector2d(30,30), Math.toRadians(180))
+                drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(26, -70, Math.toRadians(180)))
+                        .strafeRight(6)
+                        .splineToSplineHeading(new Pose2d(1.5,-48, Math.toRadians(90)), Math.toRadians(90))
+                        .lineToLinearHeading(new Pose2d(1.5, -7, Math.toRadians(90)))
+                        .splineToSplineHeading(new Pose2d(30,30, Math.toRadians(180)), Math.toRadians(90))
                         .build()
                 );
 
                 while(!Thread.currentThread().isInterrupted() && drive.isBusy()){
                     drive.update();
-                    if(temp && drive.getPoseEstimate().getY() < 15){
-                        hw.clawPosServo.setPosition(0.3);
+                    if(temp && drive.getPoseEstimate().getY() > 0){
+                        hw.sideClawPosServo.setPosition(0.300);
                         temp = false;
                     }
+                    if(temp2 && drive.getPoseEstimate().getY() > 29){
+                        hw.sideClawLeftServo.setPosition(0.5);
+                        temp2 = false;
+                    }
                 }
+                temp = true; temp2 = true;
 
-                //place pixel
 
-                hw.sideClawLeftServo.setPosition(0.5);
 
-                hw.sideClawPosServo.setPosition(0.490);
+//                //drive back
+//                drive.followTrajectoryAsync(drive.trajectoryBuilder(new Pose2d(24, -69, Math.toRadians(0)))
+//                        .splineToLinearHeading(new Pose2d(1.5, -48), Math.toRadians(-90))
+//                        .lineToLinearHeading(new Pose2d(1.5,5, Math.toRadians(-90)))
+//                        .splineTo(new Vector2d(30,30), Math.toRadians(180))
+//                        .build()
+//                );
+//
+//                while(!Thread.currentThread().isInterrupted() && drive.isBusy()){
+//                    drive.update();
+//                    if(temp && drive.getPoseEstimate().getY() < 15){
+//                        hw.clawPosServo.setPosition(0.3);
+//                        temp = false;
+//                    }
+//                }
+//
+//                //place pixel
+//
+//                hw.sideClawLeftServo.setPosition(0.5);
+//
+//                hw.sideClawPosServo.setPosition(0.490);
                 //testing
 
 

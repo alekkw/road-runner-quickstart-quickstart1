@@ -16,14 +16,15 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 public class Hardware {
 
     //drivetrain
-    DcMotor fr, fl, br, bl;
+    public DcMotor fr, fl, br, bl;
 
     //arm stuff
     DcMotorEx armMotor, slideMotor;
     Servo clawPosServo, clawOutServo;
 
     //intake
-    DcMotor intakeMotor, propelMotor;
+    public DcMotor intakeMotor;
+    public DcMotor propelMotor;
 
     //camera
     OpenCvCamera camera;
